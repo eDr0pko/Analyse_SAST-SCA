@@ -1,0 +1,44 @@
+name: SecDevOps
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  securite:
+    runs-on: ubuntu-latest
+
+    steps:
+    #SETUP
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Met à jour pip
+        run: pip install --upgrade pip
+
+      - name: Installer les dépendances à partir du requirements global
+        run: pip install -r requirements.txt || true
+        
+    #SCAN DES DEPENDANCES
+      - name: Installer Snyk
+        run: npm install -g snyk
+
+      - name: Exécuter l’analyse Snyk (SCA)
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --all-projects --json > snyk-report.json || true
+
+    #RAPPORT DE SCAN
+      - name: Upload du rapport de sécurité
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-security-report
+          path: snyk-report.json
