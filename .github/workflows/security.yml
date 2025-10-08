@@ -63,14 +63,6 @@ jobs:
 
 
 
-
-    # Installer ZAP
-      - name: Installer OWASP ZAP
-        run: |
-          wget https://github.com/zaproxy/zaproxy/releases/download/v2.13.0/ZAP_2_13_0_Linux.tar.gz
-          tar -xvzf ZAP_2_13_0_Linux.tar.gz
-          export PATH=$PATH:$PWD/ZAP_2.13.0
-
       # Lancement du serveur Python pour l'app
       - name: Démarrer le serveur Python
         run: python3 -m http.server 8000 &
