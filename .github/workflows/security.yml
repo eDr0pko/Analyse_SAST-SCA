@@ -94,12 +94,7 @@ jobs:
           target: 'http://127.0.0.1:8000'  # ✅ adapte selon le port exposé dans docker-compose.yml
           cmd_options: '-a'  # -a = analyse active, -r = rapport HTML
           allow_issue_writing: false
-  
-      - name: Upload ZAP report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-report
-          path: zap-report.html
+
 
 
       
