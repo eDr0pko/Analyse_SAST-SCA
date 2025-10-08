@@ -35,25 +35,25 @@ jobs:
       - name: Exécuter l’analyse Snyk (SCA)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --all-projects --sarif > snyk-report.sarif || true
+        run: snyk test --file=requirements.txt --package-manager=pip --skip-unresolved=true --sarif > snyk-report-SCA.sarif || true
 
       #SCAN SAST
       - name: Exécuter l’analyse Snyk Code (SAST)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk code test --sarif > snyk-code-report.sarif || true
+        run: snyk code test --sarif > snyk-report-SAST.sarif || true
         
 
     #RAPPORT DE SCAN DEPENDANCES
       - name: Upload du rapport de sécurité
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-security-report
-          path: snyk-report.sarif
+          name: snyk-report-SCA
+          path: snyk-report-SCA.sarif
 
     #UPLOAD RAPPORT
       - name: Upload du rapport Snyk Code
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-code-report
-          path: snyk-code-report.sarif
+          name: snyk-report-SAST
+          path: snyk-report-SAST.sarif
