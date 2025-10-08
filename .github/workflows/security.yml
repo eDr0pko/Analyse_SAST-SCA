@@ -41,7 +41,7 @@ jobs:
       - name: Exécuter l’analyse Snyk Code (SAST)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk code test --json > snyk-code-report.json || true
+        run: snyk code test --sarif > snyk-code-report.sarif || true
         
 
     #RAPPORT DE SCAN DEPENDANCES
