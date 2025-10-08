@@ -63,11 +63,19 @@ jobs:
 
 
 
-      # Lancement du serveur Python pour l'app
-      - name: Démarrer le serveur Python
-        run: python3 -m http.server 8000 &
 
-      # Lancement du scan DAST avec OWASP ZAP
+    # Installer les dépendances Python
+      - name: Installer les dépendances Python
+        run: pip install -r requirements.txt || true
+
+    # Lancer le serveur Python de l'application (en arrière-plan)
+      - name: Démarrer l'application Python
+        run: |
+          export FLASK_APP=app.py   # adapte selon ton fichier principal
+          flask run --host=0.0.0.0 --port=8000 &
+          sleep 5  # laisse le temps au serveur de démarrer
+
+    # Exécuter le scan DAST avec OWASP ZAP
       - name: Exécuter le scan OWASP ZAP
         uses: zaproxy/action-full-scan@v0.9.0
         with:
@@ -75,9 +83,10 @@ jobs:
           fail_on_risk: 'medium'
         continue-on-error: true
 
-    #RAPPORT SCAN DAST
+    # Upload du rapport ZAP
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: ./zap_report.html
+
