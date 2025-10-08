@@ -27,18 +27,33 @@ jobs:
       - name: Installer les dépendances à partir du requirements global
         run: pip install -r requirements.txt || true
         
-    #SCAN DES DEPENDANCES
+    #Instalation de SNYK
       - name: Installer Snyk
         run: npm install -g snyk
 
+    #SCAN DES DEPENDANCES
       - name: Exécuter l’analyse Snyk (SCA)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --all-projects --json > snyk-report.json || true
 
-    #RAPPORT DE SCAN
+      #SCAN SAST
+      - name: Exécuter l’analyse Snyk Code (SAST)
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk code test --json > snyk-code-report.json || true
+        
+
+    #RAPPORT DE SCAN DEPENDANCES
       - name: Upload du rapport de sécurité
         uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
           path: snyk-report.json
+
+    #UPLOAD RAPPORT
+      - name: Upload du rapport Snyk Code
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-code-report
+          path: snyk-code-report.json
