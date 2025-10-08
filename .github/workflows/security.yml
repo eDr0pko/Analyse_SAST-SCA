@@ -35,7 +35,7 @@ jobs:
       - name: Exécuter l’analyse Snyk (SCA)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --all-projects --json > snyk-report.json || true
+        run: snyk test --all-projects --sarif > snyk-report.sarif || true
 
       #SCAN SAST
       - name: Exécuter l’analyse Snyk Code (SAST)
@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
-          path: snyk-report.json
+          path: snyk-report.sarif
 
     #UPLOAD RAPPORT
       - name: Upload du rapport Snyk Code
