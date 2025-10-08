@@ -37,23 +37,26 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --file=requirements.txt --package-manager=pip --skip-unresolved=true --sarif > snyk-report-SCA.sarif || true
 
-      #SCAN SAST
+     #SCAN SAST
       - name: Exécuter l’analyse Snyk Code (SAST)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk code test --sarif > snyk-report-SAST.sarif || true
         
+    #SECRET SCANNING
+      - name: Secret Scanning
+        uses: gitleaks/gitleaks-action@v2
 
-    #RAPPORT DE SCAN DEPENDANCES
-      - name: Upload du rapport de sécurité
-        uses: actions/upload-artifact@v4
-        with:
-          name: snyk-report-SCA
-          path: snyk-report-SCA.sarif
-
-    #UPLOAD RAPPORT
+    #RAPPORT SCAN DE CODE
       - name: Upload du rapport Snyk Code
         uses: actions/upload-artifact@v4
         with:
           name: snyk-report-SAST
           path: snyk-report-SAST.sarif
+
+    #RAPPORT SCAN DES DEPENDANCES
+      - name: Upload du rapport Snyk SCA
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-report-SCA
+          path: snyk-report-SCA.sarif
